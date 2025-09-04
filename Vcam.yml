@@ -1,44 +1,12 @@
-name: Use Perplexity API
-
-on:
-  push:
-    branches:
-      - main
-
 jobs:
-  call-api:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
-        run: |
-          pip install requests
-
-      - name: Call Perplexity API
+      - name: Use API key securely
         env:
-          PERPLEXITY_API_KEY: ${{ secrets.HIDDENPPLEX }}
+          MY_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          python -c "
-          import os
-          import requests
-          
-          api_key = os.environ.get('PERPLEXITY_API_KEY')
-          headers = {'Authorization': f'Bearer {api_key}'}
-          
-          # Replace with your actual API endpoint and payload
-          response = requests.post(
-            'https://api.perplexity.ai/chat/completions',
-            headers=headers,
-            json={'model': 'sonar-small-chat', 'messages': [{'role': 'user', 'content': 'What is the capital of France?'}]}
-          )
-          
-          print(response.json())
-          "
+          # Your script can now access the key via the environment variable
+          echo "API Key is set."
+          # Example:
+          # python your_script.py
