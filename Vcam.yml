@@ -4,7 +4,7 @@ jobs:
     steps:
       - name: Use API key securely
         env:
-          MY_API_KEY: ${{ sk-5678mnop5678mnop5678mnop5678mnop5678mnop }}
+          MY_API_KEY: ${{sk-5678mnop5678mnop5678mnop5678mnop5678mnop}}
         run: |
           # Your script can now access the key via the environment variable
           echo "API Key is set."
