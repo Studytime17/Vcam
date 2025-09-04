@@ -1,0 +1,74 @@
+name: Test Perplexity API Call
+
+on:
+  push:
+    branches:
+      - main
+  # You can also use a manual trigger for testing
+  workflow_dispatch:
+
+jobs:
+  test-api:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10' # or any Python version you prefer
+
+      - name: Install required libraries
+        run: |
+          pip install requests
+
+      - name: Call Perplexity API with secret
+        env:
+          # This line injects your secret as an environment variable
+          PERPLEXITY_API_KEY: ${{ secrets.HIDDENPPLEX }}
+        run: |
+          python -c "
+          import os
+          import requests
+          
+          api_key = os.environ.get('PERPLEXITY_API_KEY')
+          
+          if not api_key:
+              print('API key not found. Aborting.')
+              exit(1)
+
+          headers = {
+              'Authorization': f'Bearer {api_key}',
+              'Content-Type': 'application/json',
+              'accept': 'application/json'
+          }
+          
+          data = {
+              'model': 'sonar-small-chat',
+              'messages': [
+                  {
+                      'role': 'system',
+                      'content': 'You are an honest and helpful assistant.'
+                  },
+                  {
+                      'role': 'user',
+                      'content': 'What is the capital of Japan?'
+                  }
+              ]
+          }
+          
+          try:
+              response = requests.post(
+                  'https://api.perplexity.ai/chat/completions',
+                  headers=headers,
+                  json=data
+              )
+              response.raise_for_status()  # This will raise an HTTPError for bad responses (4xx or 5xx)
+              
+              print(response.json())
+          except requests.exceptions.RequestException as e:
+              print(f'An error occurred: {e}')
+              exit(1)
+          "
