@@ -1,0 +1,32 @@
+name: Use Perplexity API
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  call-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11' # Or whatever Python version you need
+
+      - name: Install dependencies
+        run: |
+          # If your script has dependencies, install them here
+          # For example, if you need the 'requests' library
+          pip install requests
+
+      - name: Run my script with the API key
+        run: |
+          # This is the most important part!
+          # The 'env:' block securely sets your secret as an environment variable
+          python my_script.py
+        env:
+          PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
